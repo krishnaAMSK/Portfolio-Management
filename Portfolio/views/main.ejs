@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>User Search</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .user-box {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .user-name {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .view-project-link {
+      display: block;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>User Search</h1>
+  <form action="/search" method="GET">
+    <input type="text" name="search" placeholder="Search by name" required>
+    <button type="submit">Search</button>
+  </form>
+
+  <% if (users && users.length) { %>
+    <% users.forEach((user) => { %>
+      <div class="user-box">
+        <div class="user-name"><%= user.name %></div>
+        <p>Email: <%= user.email %></p>
+        <p>Contact: <%= user.contact %></p>
+        <a class="view-project-link" href="/projects?userId=<%= user._id %>">View Projects</a>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <p>No users found.</p>
+  <% } %>
+</body>
+</html>

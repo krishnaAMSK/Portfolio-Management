@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Portfolio</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/popup.js" defer></script>
+</head>
+<body>
+  <h1>Portfolio</h1>
+  <nav>
+    <a href="/">Home</a>
+    <% if (loggedIn) { %>
+      <a href="/logout">Logout</a>
+    <% } else { %>
+      <a href="/login">Login</a>
+    <% } %>
+    <a href="/projects">About</a>
+    <a href="/search">Main</a>
+  </nav>
+
+  <% if (loggedIn) { %>
+    <form action="/projects" method="POST">
+      <input type="text" name="title" placeholder="Title" required>
+      <textarea name="description" placeholder="Description" required></textarea>
+      <button type="submit">Add Project</button>
+    </form>
+    <br>
+  <% } %>
+
+  <% if (projects && projects.length) { %>
+    <ul class="project-list">
+      <% projects.forEach((project) => { %>
+        <% if (loggedIn && project.userId === userId) { %>
+          <li class="project-item">
+            <h2 class="project-title"><%= project.title %></h2>
+            <p class="project-description"><%= project.description %></p>
+            <% if (loggedIn) { %>
+              <a class="project-edit-link" href="/projects/<%= project._id %>/edit">Edit</a>
+            <% } %>
+          </li>
+        <% } %>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>No projects found.</p>
+  <% } %>
+</body>
+</html>
