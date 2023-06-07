@@ -5,13 +5,17 @@ const User = require('../models/user');
 
 const getAllProjects = async (req, res) => {
   try {
+    console.log('ok');
     const db = getDb();
-    // const projects = await db.collection('projects').find().toArray();
     const loggedIn = req.session.loggedIn || false;
-    const userEmail = req.session.user && req.session.user.email;
-    const userId = req.session.user._id; 
-    const userRole = userEmail ? await User.getRole(userEmail) : null;
-    const isAdmin = userRole === 'admin';
+    const current = req.session.user;
+    console.log('Double Check');
+    const userId = req.query.userId || req.session.user._id;
+    console.log('Checking:::');
+    console.log(userId);
+    const user = await db.collection('users').findOne({ _id: new ObjectId(userId)}); 
+    console.log('safe');
+    console.log(user);
     const users = await db.collection('users').find().toArray();
     const userIdMap = {};
 
@@ -19,17 +23,10 @@ const getAllProjects = async (req, res) => {
       userIdMap[user._id.toString()] = user;
     });
    
-    let projects;
-
-    if (req.query.userId) {
-      const userIdParam = req.query.userId;
-      projects = await db.collection('projects').find({ userId: userIdParam }).toArray();
-    } 
-    else {
-      projects = await db.collection('projects').find().toArray();
-    }
-
-    res.render('about', { loggedIn, userIdMap, isAdmin, userId, projects });
+    let projects; 
+    projects = await db.collection('projects').find({ userId: userId }).toArray();
+    console.log('ok');
+    res.render('about', { loggedIn, userIdMap, user, current, projects });
   } catch (err) {
     console.error('Failed to get projects:', err);
     res.status(500).json({ error: 'Internal server error' });

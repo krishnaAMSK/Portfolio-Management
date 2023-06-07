@@ -6,7 +6,7 @@ router.get('/', projectsController.getAllProjects);
 router.post('/', projectsController.createProject);
 router.get('/:id/edit', projectsController.getEditProject);
 router.post('/:id/edit', projectsController.updateProject);
-router.get('/:projectId', projectsController.viewProject);
+router.get('/view', projectsController.viewProject);
 
 // router.get('/search/projects/:id', projectController.viewProject); // Move viewProject route above getAllProjects route
 // router.get('/projects', projectController.getAllProjects);

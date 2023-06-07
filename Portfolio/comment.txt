@@ -1,0 +1,12 @@
+<!-- <% if (loggedIn && project.userId === userId) { %>
+          <li class="project-item">
+            <h2 class="project-title"><%= project.title %></h2>
+            <p class="project-description"><%= project.description %></p>
+            <% if (loggedIn) { %>
+              <a class="project-edit-link" href="/projects/<%= project._id %>/edit">Edit</a>
+            <% } %>
+          </li>
+        <% } %> -->
+
+        in about.ejs
+        
