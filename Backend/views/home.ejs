@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Home Page</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/popup.js" defer></script>
+</head>
+<body>
+  <% if (loggedIn) { %>
+    <h1>Welcome <%= user.name %></h1>
+  <% } else { %>
+    <h1>Welcome</h1>
+  <% } %>
+  <nav>
+    <a href="/">Home</a>
+    <% if (loggedIn) { %>
+      <a href="/logout">Logout</a>
+      <a href="/projects">About</a>
+    <% } else { %>
+      <a href="/login">Login</a>
+    <% } %>
+    <a href="/chat">Chat</a>
+    <a href="/search">Search</a>
+  </nav>
+
+  <h2>Comments</h2>
+  <% if (loggedIn && isAdmin) { %>
+    <form action="/delete-comments" method="POST" style="display: inline;">
+      <button type="submit" onclick="return confirm('Are you sure you want to delete all comments?')">Delete All Comments</button>
+    </form>
+    <br><br>
+  <% } %>
+
+  <% if (!loggedIn) { %>
+    <div class="warning-message">
+      Please login to leave a comment.
+    </div>
+  <% } %>
+  <% comments.forEach(function(comment) { %>
+    <div class="comment">
+      <p class="comment-text"><%= comment.text %></p>
+      <% if (comment.userId && userIdMap[comment.userId]) { %>
+        <p class="comment-author">Comment by: <%= userIdMap[comment.userId].name %></p>
+      <% } %>
+    </div>
+  <% }); %>
+
+  <% if (loggedIn) { %>
+    <form action="/comment" method="POST">
+      <input type="text" name="comment" placeholder="Enter your comment" required>
+      <button type="submit">Submit Comment</button>
+    </form>
+  <% } %>
+</body>
+</html>
