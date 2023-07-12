@@ -4,11 +4,12 @@ import { UserProvider } from "../pages/contexts/userContext";
 function App({ Component, pageProps }) {
   return (
     <UserProvider>
-      <Component {...pageProps} />
+        <Component {...pageProps} />
     </UserProvider>
   );
 }
 
 export default App;
+
 
 

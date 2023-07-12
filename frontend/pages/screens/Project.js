@@ -5,31 +5,35 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 const ProjectPage = () => {
-  const { user } = useUser();
+  const [user, setUser] = useState(null);
   const [projects, setProjects] = useState([]);
-
   useEffect(() => {
-    const fetchProjects = async () => {
-      console.log("HEy")
-      console.log(user.info.email)
-      try {
-        const response = await axios.get(`http://localhost:5000/projects/${user.info.email}`, {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-        setProjects(response.data.projects);
-      } catch (error) {
-        console.error("Error fetching projects:", error);
+    const checkUserAuthentication = async () => {
+      const response = await axios.get("../api/user");
+      if (response.data.success) {
+        setUser(JSON.parse(response.data.user));
       }
     };
-
+  
+    checkUserAuthentication();
+  }, []);
+  
+  useEffect(() => {
     if (user) {
+      const fetchProjects = async () => {
+        try {
+          const response = await axios.get(`http://localhost:5000/project/${user.email}`);
+          setProjects(response.data.projects);
+        } catch (error) {
+          console.error("Error fetching projects:", error);
+        }
+      };
+  
       fetchProjects();
     }
   }, [user]);
-
-  console.log("HMMMMMM")
+  
+  console.log('From Project Page')
   console.log(projects);
   return (
     <div>
@@ -40,7 +44,7 @@ const ProjectPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects[0]?.projects.map((project) => (
               <div key={project._id} className="bg-gray-800 rounded-lg shadow-md p-6 border border-blue-500">
-                <h2 className="text-xl font-semibold text-gray-100 mb-4">
+                <h2 className="text-xl text-center font-semibold text-gray-100 mb-4">
                   {project.name}
                 </h2>
                 <p className="text-gray-300 mb-4">{project.description}</p>

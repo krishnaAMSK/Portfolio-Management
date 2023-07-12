@@ -5,7 +5,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const authRouter = require('./routes/auth');
-const projectsRouter = require('./routes/projects');
+const projectsRouter = require('./routes/project');
 // const homeRouter = require('./routes/home');
 // const searchRouter = require('./routes/search');
 // const chatRouter = require('./routes/chat');
@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/', authRouter);
-app.use('/projects', projectsRouter);
+app.use('/project', projectsRouter);
 // app.use('/', homeRouter);
 
 // app.use('/search', searchRouter);

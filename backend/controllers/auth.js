@@ -1,6 +1,9 @@
 const User = require('../models/user');
 const { comparePassword, hashPassword } = require("../middleware/authHelper");
 const JWT = require("jsonwebtoken");
+const { serialize } = require("cookie");
+
+const secret = process.env.JWT_SECRET;
 
 exports.login = async (req, res) => {
   try {
@@ -16,7 +19,7 @@ exports.login = async (req, res) => {
 
     const user = await User.findOne({ email:email });
     if (!user) {
-      return res.status(404).send({
+      return res.status(200).send({
         success: false,
         message: "Email is not registerd",
       });
@@ -29,22 +32,27 @@ exports.login = async (req, res) => {
       });
     }
 
-    const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
-
-    res.status(200).send({
-      success: true,
-      message: "login successfully",
-      info: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        contact: user.contact,
-        role: user.role
+    const token = JWT.sign(
+      {
+        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 , // 1 day
+        email: email,
       },
-      token,
-    });
+      secret
+    );
+
+    // const serialised = serialize("Token", token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV !== "development",
+    //   sameSite: "strict",
+    //   maxAge: 60 * 60 * 24 * 30,
+    //   path: "/",
+      
+    // });
+
+    // res.set("Access-Control-Expose-Headers", "Set-Cookie");
+    // res.set("Set-Cookie", serialised);
+    res.status(200).json({ success: true, message: "Success!", user: user, token: token });
+
   } catch (error) {
     console.log(error);
     res.status(500).send({
