@@ -23,8 +23,9 @@ const userSchema = new mongoose.Schema(
     role: {
       type: Boolean,
       default: false,
-    }
+    },
+    // blogs: [{ type: mongoose.Types.ObjectId, ref: "Blog", required: true }],
   }
 );
 
-module.exports = mongoose.model("users", userSchema);
+module.exports = mongoose.model("User", userSchema);

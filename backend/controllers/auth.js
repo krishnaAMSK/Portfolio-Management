@@ -3,7 +3,7 @@ const { comparePassword, hashPassword } = require("../middleware/authHelper");
 const JWT = require("jsonwebtoken");
 const { serialize } = require("cookie");
 
-const secret = process.env.JWT_SECRET;
+// const secret = process.env.JWT_SECRET;
 
 exports.login = async (req, res) => {
   try {
@@ -11,7 +11,7 @@ exports.login = async (req, res) => {
     console.log(email);
     console.log(password);
     if (!email || !password) {
-      return res.status(404).send({
+      return res.status(400).send({
         success: false,
         message: "Invalid email or password",
       });
@@ -32,26 +32,26 @@ exports.login = async (req, res) => {
       });
     }
 
-    const token = JWT.sign(
-      {
-        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 , // 1 day
-        email: email,
-      },
-      secret
-    );
-
-    // const serialised = serialize("Token", token, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV !== "development",
-    //   sameSite: "strict",
-    //   maxAge: 60 * 60 * 24 * 30,
-    //   path: "/",
-      
-    // });
-
-    // res.set("Access-Control-Expose-Headers", "Set-Cookie");
-    // res.set("Set-Cookie", serialised);
-    res.status(200).json({ success: true, message: "Success!", user: user, token: token });
+    const token = JWT.sign({ id: existingUser._id }, process.env.JWT_SECRET, {
+      expiresIn: "35s",
+    });
+  
+    console.log("Generated Token\n", token);
+  
+    if (req.cookies[`${existingUser._id}`]) {
+      req.cookies[`${existingUser._id}`] = "";
+    }
+  
+    res.cookie(String(existingUser._id), token, {
+      path: "/",
+      expires: new Date(Date.now() + 1000 * 30), // 30 seconds
+      httpOnly: true,
+      sameSite: "lax",
+    });
+  
+    return res
+      .status(200)
+      .json({ message: "Successfully Logged In", user: existingUser, token });
 
   } catch (error) {
     console.log(error);
@@ -65,8 +65,8 @@ exports.login = async (req, res) => {
 
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, contact, admin} = req.body;
-    if (!name) {
+    const { username, email, password, contact, admin} = req.body;
+    if (!username) {
       return res.send({ error: "Name is Required" });
     }
     if (!email) {
@@ -92,7 +92,7 @@ exports.register = async (req, res) => {
     const hashedPassword = await hashPassword(password);
 
     const user = await new User({
-      name: name,
+      name: username,
       email: email,
       contact: contact,
       password: hashedPassword,
@@ -112,6 +112,23 @@ exports.register = async (req, res) => {
       error
     });
   }
+};
+
+exports.logout = (req, res, next) => {
+  const cookies = req.headers.cookie;
+  const prevToken = cookies.split("=")[1];
+  if (!prevToken) {
+    return res.status(400).json({ message: "Couldn't find token" });
+  }
+  JWT.verify(String(prevToken), process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      console.log(err);
+      return res.status(403).json({ message: "Authentication failed" });
+    }
+    res.clearCookie(`${user.id}`);
+    req.cookies[`${user.id}`] = "";
+    return res.status(200).json({ message: "Successfully Logged Out" });
+  });
 };
 
 exports.forgotPassword = async (req, res) => {
@@ -178,4 +195,65 @@ exports.updateProfile = async (req, res) => {
       error,
     });
   }
+};
+
+exports.verifyToken = (req, res, next) => {
+  const cookies = req.headers.cookie;
+  const token = cookies.split("=")[1];
+  if (!token) {
+    res.status(404).json({ message: "No token found" });
+  }
+  JWT.verify(String(token), process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(400).json({ message: "Invalid TOken" });
+    }
+    console.log(user.id);
+    req.id = user.id;
+  });
+  next();
+};
+
+exports.refreshToken = (req, res, next) => {
+  const cookies = req.headers.cookie;
+  const prevToken = cookies.split("=")[1];
+  if (!prevToken) {
+    return res.status(400).json({ message: "Couldn't find token" });
+  }
+  JWT.verify(String(prevToken), process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      console.log(err);
+      return res.status(403).json({ message: "Authentication failed" });
+    }
+    res.clearCookie(`${user.id}`);
+    req.cookies[`${user.id}`] = "";
+
+    const token = JWT.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
+      expiresIn: "35s",
+    });
+    console.log("Regenerated Token\n", token);
+
+    res.cookie(String(user.id), token, {
+      path: "/",
+      expires: new Date(Date.now() + 1000 * 30), // 30 seconds
+      httpOnly: true,
+      sameSite: "lax",
+    });
+
+    req.id = user.id;
+    next();
+  });
+};
+
+exports.getUser = async (req, res, next) => {
+  const userId = req.id;
+  let user;
+  try {
+    user = await User.findById(userId, "-password");
+  } catch (err) {
+    return new Error(err);
+  }
+  if (!user) {
+    return res.status(404).json({ messsage: "User Not FOund" });
+  }
+  return res.status(200).json({ user });
 };

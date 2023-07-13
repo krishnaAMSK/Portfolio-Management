@@ -71,11 +71,27 @@ export default function Login() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    try {
+      const cred = { username,email,password,contact }
+      const resp = await axios.post("http://localhost:5000/register", cred);
+      console.log(resp);
 
-    // const credentials = { email, password };
-
-    // const user = await axios.post("api/auth/login", credentials);
-    // console.log(user);
+      if(resp.data.success)
+      {
+        console.log('registered with proper info ');
+        console.log(resp)
+        setIsSignUp(false);
+        return;
+      }
+      else
+      {
+        console.log(resp.data.message);
+        alert(resp.data.message);
+        return;
+      }
+    } catch (error) {
+      console.error("Register failed:", error);
+    }
   };
 
   const handleLogOut = async () => {
