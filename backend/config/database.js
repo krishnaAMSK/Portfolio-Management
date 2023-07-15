@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
-
+require("dotenv").config();
+const URL = process.env.MONGO_URL;
 const dbName = 'myapp';
-const mongoUrl = 'mongodb://127.0.0.1:27017/' + dbName;
+const mongoUrl = URL + dbName;
 let db;
 
 const connect = async () => {
