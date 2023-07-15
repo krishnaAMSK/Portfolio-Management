@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>View Project</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .user-name {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="user-name">
+    <h2><%= user.name %></h2>
+    <p>Email: <%= user.email %></p>
+    <p>Contact: <%= user.contact %></p>
+  </div>
+  
+  <h1>View Project</h1>
+  <div>
+    <h2><%= project.title %></h2>
+    <p>Description: <%= project.description %></p>
+    <!-- Display any other project information here -->
+  </div>
+</body>
+</html>
