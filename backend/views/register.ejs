@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register Page</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/popup.js" defer></script>
+</head>
+<body>
+  <h1>Register Page</h1>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/login">Login</a>
+    <a href="/search">Search</a>
+  </nav>
+
+  <h2>Register</h2>
+  <form action="/register" method="POST">
+    <input type="text" name="name" placeholder="Name" required><br><br>
+    <input type="email" name="email" placeholder="Email" required><br><br>
+    <input type="text" name="contact" placeholder="Contact" required><br><br>
+    <input type="password" name="password" placeholder="Password" required><br><br>
+    <label for="isAdmin">Register as Admin:</label>
+    <input type="checkbox" name="isAdmin" id="isAdmin"><br><br>
+    <button type="submit">Register</button>
+  </form>
+
+  <p>Already have an account? <a href="/login">Login</a></p>
+</body>
+</html>

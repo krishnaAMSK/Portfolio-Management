@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Portfolio</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    nav {
+      background-color: #333;
+      padding: 10px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-right: 10px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .profile {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .profile h2 {
+      margin-bottom: 10px;
+    }
+
+    .projects {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .project-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .project-item {
+      margin-bottom: 10px;
+    }
+
+    .project-title {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+
+    .project-description {
+      color: #666;
+    }
+
+    .project-edit-link {
+      display: block;
+      margin-top: 10px;
+      color: #333;
+      text-decoration: none;
+    }
+
+    .no-projects {
+      text-align: center;
+      color: #666;
+      padding: 20px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      margin-bottom: 20px;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: #333;
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Portfolio</h1>
+  <nav>
+    <a href="/">Home</a>
+    <% if (loggedIn) { %>
+      <a href="/logout">Logout</a>
+      <a href="/projects">About</a>
+    <% } else { %>
+      <a href="/login">Login</a>
+    <% } %>
+    <a href="/search">Search</a>
+  </nav>
+
+  <div class="container">
+    <a class="back-button" href="/search">Back</a>
+
+    <% if (loggedIn && current._id.toString() === user._id.toString()) { %>
+      <form action="/projects" method="POST">
+        <input type="text" name="title" placeholder="Title" required>
+        <textarea name="description" placeholder="Description" required></textarea>
+        <button type="submit">Add Project</button>
+      </form>
+      <br>
+    <% } %>
+
+    <div class="profile">
+      <h2>Profile Information</h2>
+      <p><strong>Name:</strong> <%= user.name %></p>
+      <p><strong>Email:</strong> <%= user.email %></p>
+      <p><strong>Contact:</strong> <%= user.contact %></p>
+    </div>
+
+    <div class="projects">
+      <h2>Projects</h2>
+
+      <% if (projects && projects.length) { %>
+        <ul class="project-list">
+          <% projects.forEach((project) => { %>
+            <li class="project-item">
+              <h2 class="project-title"><%= project.title %></h2>
+              <p class="project-description"><%= project.description %></p>
+              <% if (loggedIn && current._id.toString() === user._id.toString()) { %>
+                <a class="project-edit-link" href="/projects/<%= project._id %>/edit">Edit</a>
+              <% } %>
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <div class="no-projects">
+          <p>No projects found.</p>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</body>
+</html>
