@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat</title>
+  <!-- Include your CSS and other stylesheets -->
+  <style>
+    .inbox-message.unread {
+      background-color: #ffd633;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chat</h1>
+
+  <!-- Render the inbox messages -->
+  <h2>Inbox</h2>
+  <% if (inboxMessages.length > 0) { %>
+    <% inboxMessages.forEach(function(message) { %>
+      <div class="inbox-message<%= message.isRead ? '' : ' unread' %>">
+        <p>From: <%= message.sender %></p>
+        <p>Content: <%= message.content %></p>
+      </div>
+    <% }); %>
+  <% } else { %>
+    <p>No messages in the inbox.</p>
+  <% } %>
+
+  <!-- Render the outbox messages -->
+  <h2>Outbox</h2>
+  <% if (outboxMessages.length > 0) { %>
+    <% outboxMessages.forEach(function(message) { %>
+      <div>
+        <p>To: <%= message.recipient %></p>
+        <p>Content: <%= message.content %></p>
+      </div>
+    <% }); %>
+  <% } else { %>
+    <p>No messages in the outbox.</p>
+  <% } %>
+
+  <!-- Create a form to send a new message -->
+  <h2>Send Message</h2>
+  <form action="/chat" method="POST">
+    <input type="email" name="recipient" placeholder="Recipient Email" required>
+    <textarea name="content" placeholder="Message Content" required></textarea>
+    <button type="submit">Send</button>
+  </form>
+</body>
+</html>

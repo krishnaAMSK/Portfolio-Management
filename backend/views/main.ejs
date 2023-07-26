@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>User Search</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    form {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    button[type="submit"] {
+      padding: 10px 20px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .user-box {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: #fff;
+    }
+
+    .user-name {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .view-project-link {
+      display: block;
+      margin-top: 10px;
+      padding: 5px 10px;
+      background-color: #555;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+    
+
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: #333;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <a class="back-button" href="/">Back</a>
+  <h1>User Search</h1>
+  <form action="/search" method="GET">
+    <input type="text" name="search" placeholder="Search by name" required>
+    <button type="submit">Search</button>
+  </form>
+
+  <% if (users && users.length) { %>
+    <% users.forEach((user) => { %>
+      <div class="user-box">
+        <div class="user-name"><%= user.name %></div>
+        <p>Email: <%= user.email %></p>
+        <p>Contact: <%= user.contact %></p>
+        <a class="view-project-link" href="/projects/?userId=<%= user._id %>">View Projects</a>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <p>No users found.</p>
+  <% } %>
+</body>
+</html>
