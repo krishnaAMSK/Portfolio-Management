@@ -44,7 +44,7 @@ export default function Login() {
     try {
       const credentials = { email, password }
       console.log('start')
-      const response = await axios.post("http://localhost:5000/login", credentials);
+      const response = await axios.post("http://localhost:5000/login", credentials, {withCredentials:true});
       console.log('end')
       console.log(response);
 
@@ -55,8 +55,8 @@ export default function Login() {
         const token = response.data.token;
         console.log('From Login Page')
         const user = response.data.user;
-        const setup = await axios.post("../api/auth/login", {token,user});
-        router.push("../screens/Home");
+        const setup = await axios.post("/api/auth/login", {token,user});
+        router.push("/screens/Home");
         return;
       }
       else
@@ -104,10 +104,10 @@ export default function Login() {
 
   useEffect(() => {
     const checkUserAuthentication = async () => {
-      const user = await axios.get("api/user");
+      const user = await axios.get("/api/user");
       console.log(user);
       if (user.data.success) {
-        router.push("screens/Home");
+        router.push("/screens/Home");
       }
     };
     checkUserAuthentication();

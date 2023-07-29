@@ -8,25 +8,28 @@ import axios from "axios";
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import EmailIcon from '@mui/icons-material/Email';
-
+import { useRouter } from "next/router";
 
 const handleButtonClick = () => {
   window.open('http://google.com', '_blank');
 };
 
-function About() {
+function View() {
   const [user, setUser] = useState(null);
   const [projects, setProjects] = useState([]);
+  const router = useRouter();
+  const {email} = router.query;
+  console.log('from about page')
+  console.log(email)
 
   useEffect(() => {
-    const checkUserAuthentication = async () => {
-      const response = await axios.get("../api/user");
+    const getUser = async () => {
+      const response = await axios.get(`http://localhost:5000/user/getUser/${email}`);
       if (response.data.success) {
-        setUser(JSON.parse(response.data.user));
+        setUser(response.data.user);
       }
     };
-
-    checkUserAuthentication();
+    getUser();
   }, []);
 
   useEffect(() => {
@@ -137,4 +140,4 @@ function About() {
   );
 }
 
-export default About;
+export default View;

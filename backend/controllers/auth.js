@@ -47,7 +47,6 @@ exports.login = async (req, res) => {
       httpOnly: true,
       sameSite: "lax",
     });
-  
     return res
       .status(200)
       .json({ success: true, message: "Successfully Logged In", user: user, token });

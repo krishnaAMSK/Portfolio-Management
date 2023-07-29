@@ -5,13 +5,14 @@ import Header from "../components/Header";
 import Image from "next/image";
 import axios from "axios";
 import { useRouter } from 'next/router';
+import { toast } from 'react-toastify';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
   useEffect(() => {
     const checkUserAuthentication = async () => {
       try {
-        const response = await axios.get("../api/user", { params: { _t: Date.now() } });
+        const response = await axios.get("/api/user", { params: { _t: Date.now() } });
         if (response.data.success) {
           console.log('User Data:', response.data.user);
           setUser(JSON.parse(response.data.user));
@@ -53,11 +54,13 @@ const Profile = () => {
       skills:skills
     }
     );
-    
     console.log(response.data)
-    // setUser(JSON.parse(response.data.user));
-    console.log('hmm')
-    // router.reload();
+
+    const update = await axios.post("/api/auth/login", {user:response.data.user});
+    toast.success(update.data.message, {
+      position: "top-center",
+      autoClose: 3000,
+    });
   };
 
   const handleDeleteAccount = () => {
@@ -82,10 +85,19 @@ const Profile = () => {
     <div>
       <Header />
       <div className="container mx-auto max-w-md p-4">
-        <h1 className="text-3xl font-semibold mb-4">Update Profile</h1>
+        <h1 className="text-3xl font-semibold mb-4 text-center">Update Profile</h1>
         <div>
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Name</label>
+            {user && (
+                <Image
+                  src="/man.png" 
+                  alt="Profile Picture"
+                  width={100}
+                  height={100}
+                  className="rounded-full mx-auto mb-2"
+                />
+              )}
+            <label className="block text-white-700 font-bold mb-2">Name</label>
             <input
               type="text"
               value={name}
@@ -94,7 +106,7 @@ const Profile = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Email</label>
+            <label className="block text-white-700 font-bold mb-2">Email</label>
             <input
               type="text"
               value={user?.email}
@@ -103,7 +115,7 @@ const Profile = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Contact</label>
+            <label className="block text-white-700 font-bold mb-2">Contact</label>
             <input
               type="text"
               value={contact}
@@ -112,7 +124,7 @@ const Profile = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">About</label>
+            <label className="block text-white-700 font-bold mb-2">About</label>
             <input
               type="text"
               value={about}
@@ -122,7 +134,7 @@ const Profile = () => {
           </div>
 
           <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">Skills</label>
+          <label className="block text-white-700 font-bold mb-2">Skills</label>
           {skills?.map((skill, index) => (
             <div key={index} className="flex items-center mb-2">
               <input

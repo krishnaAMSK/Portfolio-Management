@@ -5,6 +5,7 @@ import { serialize } from "cookie";
 
 export default async function (req, res) {
   const { token, user } = req.body;
+  
   const TOKEN = serialize("Token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",

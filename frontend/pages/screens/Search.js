@@ -63,7 +63,7 @@ export default function Search() {
                     {/* Make the user information clickable */}
                     <a
                       className="view-profile-link text-blue-500 hover:text-blue-600 font-medium"
-                      href={`/profile/${user._id}`} // Replace "profile" with your profile page route
+                      href={`/screens/View?email=${user.email}`} // Replace "profile" with your profile page route
                     >
                       View Profile
                     </a>

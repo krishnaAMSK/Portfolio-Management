@@ -34,18 +34,27 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
-exports.getUser = async (req, res, next) => {
-  const userId = req.id;
-  let user;
+exports.getUser = async (req, res) => {
+  console.log('working');
+  const { email } = req.params;
+  console.log(email);
+  
   try {
-    user = await User.findById(userId, "-password");
+    if (!email) {
+      return res.status(404).json({ success: false, message: "Email Undefined" });
+    }
+
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User Not Found" });
+    }
+
+    return res.status(200).json({ success: true, user: user });
   } catch (err) {
-    return new Error(err);
+    console.error(err);
+    res.status(500).json({ success: false, message: "Error while fetching User", error: err.message });
   }
-  if (!user) {
-    return res.status(404).json({ messsage: "User Not FOund" });
-  }
-  return res.status(200).json({ user });
 };
 
 exports.deleteUser = async (req, res) => {
