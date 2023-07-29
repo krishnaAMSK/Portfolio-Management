@@ -56,12 +56,6 @@ exports.getAllPosts = async (req, res) => {
     let email = req.query.email;
     let category = req.query.category;
     let posts;
-<<<<<<< HEAD
-=======
-    // console.log(email);
-    // console.log(category);
-    // console.log('ok');
->>>>>>> 9a106c9a7cea68e0f8d17c6c024623f4a0b7186b
     try {
 
         if(email!=undefined) 
