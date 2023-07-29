@@ -35,9 +35,9 @@ exports.updateProfile = async (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
-  console.log('working');
+  // console.log('working');
   const { email } = req.params;
-  console.log(email);
+  // console.log(email);
   
   try {
     if (!email) {

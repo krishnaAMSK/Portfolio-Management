@@ -19,18 +19,18 @@ function View() {
   const [projects, setProjects] = useState([]);
   const router = useRouter();
   const {email} = router.query;
-  console.log('from about page')
-  console.log(email)
 
   useEffect(() => {
     const getUser = async () => {
-      const response = await axios.get(`http://localhost:5000/user/getUser/${email}`);
-      if (response.data.success) {
-        setUser(response.data.user);
-      }
+      if(email!==undefined) {
+        const response = await axios.get(`http://localhost:5000/user/getUser/${email}`);
+        if (response.data.success) {
+          setUser(response.data.user);
+        }
+      }     
     };
     getUser();
-  }, []);
+  }, [email]);
 
   useEffect(() => {
     if (user) {
