@@ -32,7 +32,11 @@ exports.login = async (req, res) => {
         message: "Invalid Password",
       });
     }
+<<<<<<< HEAD
 
+=======
+    console.log('doubt start')
+>>>>>>> 9a106c9a7cea68e0f8d17c6c024623f4a0b7186b
     const token = JWT.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "35s",
     });
@@ -42,7 +46,6 @@ exports.login = async (req, res) => {
     if (user && user._id && req.cookies && typeof req.cookies === 'object' && req.cookies[`${user._id}`]) {
       req.cookies[`${user._id}`] = "";
     }
-
     res.cookie(String(user._id), token, {
       path: "/",
       expires: new Date(Date.now() + 1000 * 30), // 30 seconds
