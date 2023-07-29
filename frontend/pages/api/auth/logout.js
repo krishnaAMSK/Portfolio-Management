@@ -1,4 +1,3 @@
-/* eslint-disable import/no-anonymous-default-export */
 import { serialize } from "cookie";
 
 export default async function (req, res) {

@@ -1,33 +1,26 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { connect } = require('./config/database');
+const cookieParser = require('cookie-parser');
 
 require('dotenv').config();
 
-// const authRouter = require('./routes/auth');
-// const projectsRouter = require('./routes/project');
-// const searchRouter = require('./routes/search');
-// const userRouter = require('./routes/user');
-// const homeRouter = require('./routes/home');
-// const chatRouter = require('./routes/chat');
 const Router = require('./routes/route');
-
 const app = express();
 const port =  process.env.PORT || 8080;
 
-app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+  exposedHeaders: ['Set-Cookie'], 
+}));
 
 app.use('/', Router);
-// app.use('/', authRouter);
-// app.use('/project', projectsRouter);
-// app.use('/search', searchRouter);
-// app.use('/user', userRouter); 
-// app.use('/', homeRouter);
-// app.use('/chat', chatRouter);
 
-const { connect } = require('./config/database');
 connect()
   .then(() => {
     app.listen(port, () => {

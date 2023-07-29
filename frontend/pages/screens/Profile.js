@@ -10,10 +10,14 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   useEffect(() => {
     const checkUserAuthentication = async () => {
-      const response = await axios.get("../api/user");
-      if (response.data.success) {
-        console.log('From Profile')
-        setUser(JSON.parse(response.data.user));
+      try {
+        const response = await axios.get("../api/user", { params: { _t: Date.now() } });
+        if (response.data.success) {
+          console.log('User Data:', response.data.user);
+          setUser(JSON.parse(response.data.user));
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
       }
     };
 
@@ -21,6 +25,7 @@ const Profile = () => {
   }, []);
 
   useEffect(() => {
+    console.log('User State:', user);
     if (user) {
       setName(user.name);
       setContact(user.contact);
@@ -46,10 +51,13 @@ const Profile = () => {
       contact:contact,
       about:about,
       skills:skills
-    });
+    }
+    );
+    
     console.log(response.data)
+    // setUser(JSON.parse(response.data.user));
     console.log('hmm')
-    router.push('../screens/about');
+    // router.reload();
   };
 
   const handleDeleteAccount = () => {
@@ -108,7 +116,7 @@ const Profile = () => {
             <input
               type="text"
               value={about}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setAbout(e.target.value)}
               className="w-full p-2 text-black border rounded"
             />
           </div>

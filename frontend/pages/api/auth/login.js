@@ -1,4 +1,3 @@
-/* eslint-disable import/no-anonymous-default-export */
 import { sign } from "jsonwebtoken";
 import { serialize } from "cookie";
 

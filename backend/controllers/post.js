@@ -35,7 +35,7 @@ exports.deletePost = async (request, response) => {
         const post = await Post.findById(request.params.id);
         
         await post.delete()
-
+        console.log('Post Deleted')
         response.status(200).json('post deleted successfully');
     } catch (error) {
         response.status(500).json(error)
@@ -56,9 +56,6 @@ exports.getAllPosts = async (req, res) => {
     let email = req.query.email;
     let category = req.query.category;
     let posts;
-    // console.log(email);
-    // console.log(category);
-    // console.log('ok');
     try {
 
         if(email!=undefined) 

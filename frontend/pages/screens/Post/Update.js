@@ -53,15 +53,24 @@ const Button = ({ onClick, children }) => (
 const CreatePost = () => {
   const router = useRouter();
   const { data, category } = router.query;
-  const parsedData = JSON.parse(data);
+  let parsedData;
+  try {
+    if (data) {
+      parsedData = JSON.parse(data);
+    } else {
+      console.error("Data JSON is empty, undefined, or null.");
+    }
+  } catch (error) {
+    console.error("Error parsing JSON:", error);
+  }
 
   const initialPost = {
-    title: parsedData.title,
-    description: parsedData.description,
-    picture: parsedData.picture,
-    email: parsedData.email,
-    categories: parsedData.categories,
-    createdDate: parsedData.createdDate,
+    title: parsedData?.title,
+    description: parsedData?.description,
+    picture: parsedData?.picture,
+    email: parsedData?.email,
+    categories: parsedData?.categories,
+    createdDate: parsedData?.createdDate,
   };
 
   const [post, setPost] = useState(initialPost);
@@ -70,7 +79,7 @@ const CreatePost = () => {
   const [description, setDescription] = useState(initialPost.description);
   const [user, setUser] = useState(null);
 
-  const url = post.picture ? post.picture : 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wJTIwc2V0dXB8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80';
+  const url = post?.picture ? post.picture : 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wJTIwc2V0dXB8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80';
   
   useEffect(() => {
     const checkUserAuthentication = async () => {
@@ -92,12 +101,10 @@ const CreatePost = () => {
               const response = await axios.post("http://localhost:5000/file/upload",data);
               const updatedPost = { ...post, picture: response.data };
               setPost(updatedPost);
-            //   post.picture = response.data;
           }
       }
       getImage();
-    //   post.categories = router.query.category || 'All';
-    //   post.email = user?.email;
+
     const updatedPost = {
         ...post,
         categories: category || 'All',
@@ -105,18 +112,11 @@ const CreatePost = () => {
     };
     setPost(updatedPost);
   }, [file,router.query.category,user])
-  
-//   const parsedData = JSON.parse(data);
-  console.log('Checking from Updato')
-  
-  console.log(parsedData.title)
-  const updatePost = async () => {
-    console.log('From updato')
-    console.log(data.title)
-      const response = await axios.put(`http://localhost:5000/post/update/${parsedData._id}`,post);
-      // await API.createPost(post);
-      console.log(post);
-      router.push('/');
+
+  const updatePost = async (event) => {
+    event.preventDefault();
+    const response = await axios.put(`http://localhost:5000/post/update/${parsedData._id}`,post);
+    router.push('/screens/Post/Display');
   }
 
   const handleChange = (e) => {

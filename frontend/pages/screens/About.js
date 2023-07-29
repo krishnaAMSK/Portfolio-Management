@@ -1,43 +1,20 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { dividerClasses } from "@mui/material";
 import { Button } from 'react-bootstrap';
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import GitHubIcon from '@mui/icons-material/GitHub';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import EmailIcon from '@mui/icons-material/Email';
+
 
 const handleButtonClick = () => {
   window.open('http://google.com', '_blank');
 };
 
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-  },
-  content: {
-    textAlign: 'center',
-  },
-  heading: {
-    fontSize: '40px',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-  },
-  photo: {
-    width: '250px',
-    height: '275px',
-    borderRadius: '20%',
-    //boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)', // Optional: add a shadow to the photo
-    margin: 'auto',
-    // width: '50%',
-  },
-};
-
 function About() {
-
   const [user, setUser] = useState(null);
   const [projects, setProjects] = useState([]);
 
@@ -69,56 +46,51 @@ function About() {
 
   return (
     <div>
-      <Header></Header>
+      <Header />
 
       {/* Intro */}
-      <div style={styles.container}>
-        <div style={styles.content}>
-          <h1 style={styles.heading}>{user?.name}</h1>
+      <div className="flex justify-center items-center h-screen">
+        {/* Left Side */}
+        <div className="text-center p-8">
           <img
-            src="https://picsum.photos/id/64/200/300" // Replace 'john_photo_url' with the actual URL of John's photo
-            alt="John Doe"
-            style={styles.photo}
+            src="/man.png"
+            alt="Profile picture"
+            className="rounded-full border-2 border-white mb-4"
+            width={200}
+            height={200}
           />
-          {/* <Button variant="primary">Check my resume</Button>  */}
-          <button onClick={handleButtonClick} style={{ margin: '40px' }} className="bg-transparent text-white hover:bg-white hover:text-black font-bold py-2 px-4 border border-white-700 active:bg-white">
+          <h1 className="text-4xl font-bold mb-4">{user?.name}</h1>
+          <button
+            onClick={handleButtonClick}
+            className="bg-transparent text-white hover:bg-white hover:text-black font-bold py-2 px-4 border border-white-700 active:bg-white mb-4"
+          >
             Check my resume
           </button>
         </div>
-        <div>
 
-        </div>
-      </div>
-
-      {/* Content */}
-      <div id="section-3" class="About_me">
-        <div class="content">
-          <div class="my_name">
-            About Myself
+        {/* Right Side */}
+        <div className="p-8 flex flex-col justify-start items-start">
+          <div className="text-center mb-4">
+            <h1 className="text-5xl font-bold">ABOUT MYSELF</h1>
           </div>
-          <div>
-            <p>
-              {user?.about}
-            </p>
+          <div className="text-sm">
+            {user?.about}
           </div>
         </div>
       </div>
 
       {/* Project */}
-
-      <div id="section-2" class="About_me">
-        <div class="content">
-          <div class="my_name">
-            Projects
-          </div>
-          <div class="wrapper">
-            <div class="cards_wrap">
+      <div id="section-2" className="About_me">
+        <div className="content">
+          <div className="my_name">Projects</div>
+          <div className="wrapper">
+            <div className="cards_wrap">
               {projects[0]?.projects.map((project) => (
-                <div class="card_item" key={project._id}>
-                  <div class="card_inner">
-                    <div class="role_name">{project.name}</div>
-                    <div class="film">{project.description}</div>
-                    <a href={project.source} class="real_name">GitHub Link</a>
+                <div className="card_item p-4 rounded-md" key={project._id}>
+                  <div className="card_inner">
+                    <div className="role_name">{project.name}</div>
+                    <div className="film">{project.description}</div>
+                    <a href={project.source} className="real_name">GitHub Link</a>
                   </div>
                 </div>
               ))}
@@ -127,17 +99,15 @@ function About() {
         </div>
       </div>
 
-      <div id="section-2" class="About_me">
-        <div class="content">
-          <div class="my_name">
-            Skills
-          </div>
-          <div class="wrapper">
-            <div class="cards_wrap">
+      <div id="section-2" className="About_me">
+        <div className="content">
+          <div className="my_name">Skills</div>
+          <div className="wrapper">
+            <div className="cards_wrap">
               {user?.skills.map((skill) => (
-                <div class="card_item">
-                  <div class="card_inner">
-                    <div class="role_name">{skill}</div>
+                <div className="card_item p-4 rounded-md" key={skill}>
+                  <div className="card_inner">
+                    <div className="role_name">{skill}</div>
                   </div>
                 </div>
               ))}
@@ -146,51 +116,25 @@ function About() {
         </div>
       </div>
 
-      <div id="section-3" class="About_me">
-        <div class="content">
-          <div class="my_name">
-            Reach me
+      <div id="section-3" className="About_me">
+        <div className="content">
+          <div className="my_name text-center text-5xl">Reach me</div>
+          <div className="flex justify-center items-center space-x-4 mt-4">
+            <a href="https://github.com/" target="_blank" rel="noopener noreferrer">
+              <GitHubIcon fontSize="large" />
+            </a>
+            <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer">
+              <LinkedInIcon fontSize="large" />
+            </a>
+            <a href="mailto:yourmail@example.com">
+              <EmailIcon fontSize="large" />
+            </a>
           </div>
-          <div>
-            {/* <div style={{ float: 'left' }} class="image">
-              <Link href="https://linkedin.com/">
-                <Image src="/images/linkedin.png" alt="My Image" width={100} height={100} />
-              </Link>
-            </div>
-            <div style={{ float: 'left' }} class="image">
-              <Link href="https://github.com/">
-                <Image src="/images/instagram.png" alt="My Image" width={100} height={100} />
-              </Link>
-            </div>
-            <div style={{ float: 'left' }} class="image">
-              <Link href="https://github.com/">
-                <Image src="/images/gmail.png" alt="My Image" width={100} height={100} />
-              </Link>
-            </div> */}
-          </div>
-
-          {/*             
-            <Link href="https://linkedin.com/">
-                <Image fill={true} src="/images/linkedin.png" alt="My Image"/>
-            </Link>
-            <Link href="mailto: yourmail@hotmail.com">
-                <Image fill={true} src="/images/gmail.png" alt="My Image"/>
-            </Link>
-            <Link href="https://instagram.com/">
-                <Image fill={true} src="/images/instagram.png" alt="My Image" />
-            </Link> */}
-
-
         </div>
       </div>
-    </div>
 
+    </div>
   );
 }
 
 export default About;
-
-
-
-
-

@@ -163,6 +163,7 @@
     "multer": "^1.4.4",
     "multer-gridfs-storage": "^5.0.2",
     "negotiator": "^0.6.3",
+    "next": "^13.4.12",
     "node-addon-api": "^3.2.1",
     "node-fetch": "^2.6.7",
     "nodemon": "^2.0.16",
@@ -214,8 +215,8 @@
     "sparse-bitfield": "^3.0.3",
     "statuses": "^2.0.1",
     "streamsearch": "^0.1.2",
-    "string-width": "^4.2.3",
     "string_decoder": "^1.1.1",
+    "string-width": "^4.2.3",
     "strip-ansi": "^6.0.1",
     "strip-json-comments": "^2.0.1",
     "supports-color": "^5.5.0",
@@ -248,7 +249,6 @@
     "xtend": "^4.0.2",
     "yallist": "^4.0.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
