@@ -196,4 +196,12 @@ const CreatePost = () => {
   );
 };
 
+export async function getStaticProps(context) {
+  return {
+    props: {
+      protected: true
+    },
+  }
+}
+
 export default CreatePost;
