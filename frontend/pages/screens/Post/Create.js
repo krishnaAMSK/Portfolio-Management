@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { AddCircle as Add } from '@mui/icons-material';
-import Header from '../../components/Header';
+import Header from "@/pages/components/Header";
 
 
 
@@ -181,5 +181,13 @@ const CreatePost = () => {
     </Container>
   );
 };
+
+export async function getStaticProps(context) {
+  return {
+    props: {
+      protected: true
+    },
+  }
+}
 
 export default CreatePost;

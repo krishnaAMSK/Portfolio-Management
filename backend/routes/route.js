@@ -18,6 +18,8 @@ router.post('/register', authController.register);
 router.post('/user/update', userController.updateProfile);
 router.get('/user/getUser/:email', userController.getUser);
 router.delete('/user/delete/:email', userController.deleteUser);
+router.post('/user/forgotPassword',authController.sendOTP);
+router.post('/user/resetPassword',authController.resetPassword);
 
 router.get('/search', searchController.searchUsers);
 

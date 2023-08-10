@@ -16,11 +16,11 @@ conn.once('open', () => {
 
 
 exports.uploadImage = (request, response) => {
+    // console.log('hey buddy')
     if(!request.file) 
         return response.status(404).json("File not found");
     
     const imageUrl = `${url}/file/${request.file.filename}`;
-
     response.status(200).json(imageUrl);    
 }
 

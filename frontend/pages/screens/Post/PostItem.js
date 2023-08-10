@@ -111,4 +111,12 @@ const PostItem = ({ post, user, deletePost }) => {
   );
 };
 
+export async function getStaticProps(context) {
+  return {
+    props: {
+      protected: true
+    },
+  }
+}
+
 export default PostItem;
