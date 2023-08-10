@@ -5,16 +5,17 @@ const { parse, serialize } = require("cookie");
 
 exports.updateProfile = async (req, res) => {
   try {
-    const { name, email, contact, about, skills } = req.body;
+    const { name, email, contacts, about, skills, photo} = req.body;
     const user = await User.findOne({ email: email });
     console.log(user);
     const updatedUser = await User.findOneAndUpdate(
       { email: email },
       {
         name: name || user.name,
-        contact: contact || user.contact,
+        contacts: contacts || user.contacts,
         about: about || user.about,
         skills: skills || user.skills,
+        photo: photo || user.photo,
       },
       { new: true }
     );
@@ -35,10 +36,7 @@ exports.updateProfile = async (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
-  // console.log('working');
-  const { email } = req.params;
-  // console.log(email);
-  
+  const { email } = req.params; 
   try {
     if (!email) {
       return res.status(404).json({ success: false, message: "Email Undefined" });

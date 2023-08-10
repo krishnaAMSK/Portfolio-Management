@@ -2,12 +2,44 @@ const User = require('../models/user');
 const { comparePassword, hashPassword } = require("../middleware/authHelper");
 const JWT = require("jsonwebtoken");
 const { serialize } = require("cookie");
+const nodemailer = require('nodemailer');
+const randomstring = require('randomstring');
+const bcrypt = require('bcrypt');
 
 // const secret = process.env.JWT_SECRET;
 
+const generateForgotPasswordEmailContent = (name, email, otp) => {
+  let mailSubject = 'Forgot Password - OTP';
+  let content = `<p>Hi ${name}, your OTP for password reset is: ${otp}</p>`;
+  return { mailSubject, content };
+};
+
+const sendMail = async (email, mailSubject, content) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: "egoist042@gmail.com",
+        pass: "yoojbjjvljuhjjmp",
+      },
+    });
+
+    const mailOptions = {
+      from: "egoist042@gmail.com",
+      to: email,
+      subject: mailSubject,
+      html: content,
+    };
+
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.log('Error sending email:', error);
+    throw error;
+  }
+};
+
 exports.login = async (req, res) => {
   try {
-    console.log('start')
     const { email, password } = req.body;
     console.log(email);
     console.log(password);
@@ -63,7 +95,8 @@ exports.login = async (req, res) => {
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password, contact, admin} = req.body;
+    const acceptableRoles = ["user", "admin", "moderator"];
+    const { username, email, password, contact, role} = req.body;
     if (!username) {
       return res.send({ error: "Name is Required" });
     }
@@ -73,13 +106,13 @@ exports.register = async (req, res) => {
     if (!password) {
       return res.send({ message: "Password is Required" });
     }
-    if (!contact) {
-      return res.send({ message: "Phone no is Required" });
-    }
-    const role = admin === true || admin === 'true';;
 
     const exisitingUser = await User.findOne({ email:email });
+    let userRole = role;
 
+    if (!role || !acceptableRoles.includes(role)) {
+      userRole = "user";
+    }
     if (exisitingUser) {
       return res.status(200).send({
         success: false,
@@ -94,7 +127,7 @@ exports.register = async (req, res) => {
       email: email,
       contact: contact,
       password: hashedPassword,
-      role: role
+      role: userRole
     }).save();
 
     res.status(201).send({
@@ -129,38 +162,61 @@ exports.logout = (req, res, next) => {
   });
 };
 
-exports.forgotPassword = async (req, res) => {
+exports.sendOTP = async (req, res) => {
   try {
-    const { email, newPassword } = req.body;
+    console.log('In OTP Controller')
+    const { email } = req.body;
     if (!email) {
-      res.status(400).send({ message: "Emai is required" });
-    }
-    if (!newPassword) {
-      res.status(400).send({ message: "New Password is required" });
+      console.log('baka')
+      return res.status(200).json({ success:false, message: 'Email is required.' });
     }
     const user = await User.findOne({ email:email });
-    
     if (!user) {
-      return res.status(404).send({
-        success: false,
-        message: "Wrong Email Or Answer",
-      });
+      console.log('baka')
+      return res.status(200).json({ success:false, message: 'User not found.' });
     }
-    const hashed = await hashPassword(newPassword);
-    await User.findByIdAndUpdate(user._id, { password: hashed });
-    res.status(200).send({
-      success: true,
-      message: "Password Reset Successfully",
-    });
+    console.log('valid user')
+    const otp = randomstring.generate({ length: 6, charset: 'numeric' });
+    user.otp = otp;
+    await user.save();
+    const { mailSubject, content } = generateForgotPasswordEmailContent(user.name, user.email, otp);
+    await sendMail(user.email, mailSubject, content);
+    console.log('OTP sent to the user');
+    return res.status(200).json({ success:true, message: 'An OTP has been sent to your email.' });
   } catch (error) {
-    console.log(error);
-    res.status(500).send({
-      success: false,
-      message: "Something went wrong",
-      error,
-    });
+    console.log(error.message);
+    res.status(500).json({ success:false, message: 'An error occurred while sending the OTP.' });
   }
 };
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { otp, password } = req.body;
+
+    if (!password) {
+      return res.status(400).json({ success: false, message: 'Password is required' });
+    }
+
+    const user = await User.findOne({ otp:otp });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Invalid OTP' });
+    }
+
+    if (user.otp !== otp) {
+      return res.status(400).json({ success: false, message: 'Invalid OTP' });
+    }
+
+    const hashedPassword = await hashPassword(password);
+    user.password = hashedPassword;
+    user.otp = ''; 
+    await user.save();
+    return res.json({ success: true, message: 'Password reset successful' });
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
 
 exports.verifyToken = (req, res, next) => {
   const cookies = req.headers.cookie;
@@ -208,4 +264,6 @@ exports.refreshToken = (req, res, next) => {
     next();
   });
 };
+
+
 

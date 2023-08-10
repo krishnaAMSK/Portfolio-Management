@@ -60,13 +60,24 @@ function Home() {
                   {user?.about}
                 </div>
                 <div className="card-inner flex flex-col items-center" style={{ float: 'right' }}>
-                  <img
-                    src="/man.png"
-                    alt="Profile picture"
-                    className="rounded-full border-2 border-white mb-4"
-                    width={200}
-                    height={200}
-                  />
+
+                  {user && user.photo !== "" ? (
+                    <img
+                      src={user.photo}
+                      alt="User Photo"
+                      width={150}
+                      height={150}
+                      className="rounded-full border-2 border-white mb-4"
+                    />
+                  ) : (
+                    <img
+                      src="/man.png"
+                      alt="Default User Photo"
+                      width={150}
+                      height={150}
+                      className="rounded-full border-2 border-white mb-4"
+                    />
+                  )}
                   <div style={{ margin: '10px' }}>
                     <button
                       onClick={handleButtonClick}
@@ -81,7 +92,7 @@ function Home() {
           </div>
         </div>
       </div>
-      
+
       {/* Project */}
       <div id="section-2" class="About_me">
         <div class="content">
@@ -154,3 +165,4 @@ export async function getStaticProps(context) {
 }
 
 export default Home;
+

@@ -2,7 +2,6 @@ import { serialize } from "cookie";
 
 export default async function (req, res) {
   const { cookies } = req;
-
   const jwt = cookies.Token;
 
   if (!jwt) {

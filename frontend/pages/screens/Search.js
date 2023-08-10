@@ -10,7 +10,7 @@ export default function Search() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    const searchTerm = e.target.search.value;
+    const searchTerm = e.target.search.value.trim();
     try {
       const response = await fetch(`http://localhost:5000/search/?name=${searchTerm}`);
       const data = await response.json();
@@ -31,7 +31,6 @@ export default function Search() {
               type="text"
               name="search"
               placeholder="Search by name"
-              required
               className="border border-gray-400 rounded-md py-2 px-3 mb-2 bg-black text-white-800"
             />{' '}
             <button
@@ -48,18 +47,27 @@ export default function Search() {
                 <div key={user._id} className="user-box m-4 flex items-center ">
                   {/* Display the user photo on the left */}
                   <div className="mr-4">
-                    <Image
-                      src="/man.png"
-                      alt="User Photo"
-                      width={100}
-                      height={100}
-                      className="rounded-full"
-                    />
+                    {user && user.photo !== "" ? (
+                      <Image
+                        src={user.photo}
+                        alt="User Photo"
+                        width={100}
+                        height={100}
+                        className="rounded border-2 border-white mb-4"
+                      />
+                    ) : (
+                      <Image
+                        src="/man.png"
+                        alt="Default User Photo"
+                        width={100}
+                        height={100}
+                        className="rounded-full border-2 border-white mb-4"
+                      />
+                    )}
                   </div>
                   <div>
                     <div className="user-name text-white font-semibold">{user.name}</div>
-                    <p className="text-white">Email: {user.email}</p>
-                    <p className="text-white">Contact: {user.contact}</p>
+                    <p className="text-white">{user.email}</p>
                     {/* Make the user information clickable */}
                     <a
                       className="view-profile-link text-blue-500 hover:text-blue-600 font-medium"
@@ -67,6 +75,16 @@ export default function Search() {
                     >
                       View Profile
                     </a>
+                    {user.role === "admin" && (
+                      <div className="flex mt-2">
+                        <button className="text-blue-500 hover:text-blue-600 font-medium mr-4">
+                          Make Admin
+                        </button>
+                        <button className="text-red-500 hover:text-red-600 font-medium">
+                          Delete User
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

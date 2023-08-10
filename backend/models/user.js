@@ -16,13 +16,31 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    contact: {
+    contacts: {
+      type: [
+        {
+          type: {
+            type: String,
+            enum: ["linkedin", "github", "phone"],
+          },
+          value: {
+            type: String,
+          }
+        }
+      ],
+      default: [
+        { type: "github", value: "" },
+        { type: "linkedin", value: "" },
+        { type: "phone", value: "" }
+      ]
+    },
+    photo: {
       type: String,
-      required: true,
+      default: "",
     },
     role: {
-      type: Boolean,
-      default: false,
+      type: String,
+      default: "user",
     },
     about: {
       type: String,
@@ -32,7 +50,8 @@ const userSchema = new mongoose.Schema(
     skills : { 
       type : Array , 
       default : [] ,   
-    } 
+    },
+    otp: String
     // blogs: [{ type: mongoose.Types.ObjectId, ref: "Blog", required: true }],
   }
 );
